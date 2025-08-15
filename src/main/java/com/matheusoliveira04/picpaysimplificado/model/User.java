@@ -1,7 +1,9 @@
 package com.matheusoliveira04.picpaysimplificado.model;
 
 import com.matheusoliveira04.picpaysimplificado.model.enums.UserType;
+import com.matheusoliveira04.picpaysimplificado.validation.annotation.CpfCnpjFormat;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -15,8 +17,10 @@ public class User {
     private UUID id;
     @Column(nullable = false)
     private String name;
+    @CpfCnpjFormat
     @Column(nullable = false, unique = true, length = 14)
     private String cpfCnpj;
+    @Email
     @Column(nullable = false, unique = true)
     private String email;
     @Column(nullable = false, length = 8)
