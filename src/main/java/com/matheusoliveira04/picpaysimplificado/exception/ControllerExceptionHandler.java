@@ -13,6 +13,20 @@ import java.util.List;
 @RestControllerAdvice
 public class ControllerExceptionHandler {
 
+    @ExceptionHandler(ObjectNotFoundException.class)
+    public ResponseEntity<StandardError> getObjectNotFoundException(
+            ObjectNotFoundException e,
+            HttpServletRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new StandardError(
+                        LocalDateTime.now(),
+                        HttpStatus.NOT_FOUND.value(),
+                        request.getRequestURI(),
+                        List.of(e.getMessage())
+                ));
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<StandardError> getDataIntegrityViolationException(
             DataIntegrityViolationException e,
