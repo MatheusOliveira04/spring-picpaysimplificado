@@ -57,4 +57,30 @@ public class ControllerExceptionHandler {
                 ));
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<StandardError> getMethodArgumentNotValidException(
+            MethodArgumentNotValidException e,
+            HttpServletRequest request) {
+        List<String> allErrors = e.getAllErrors()
+                .stream()
+                .map(error -> extractMessage( ((FieldError) error).getField(), error.getDefaultMessage()))
+                .toList();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new StandardError(
+                        LocalDateTime.now(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        request.getRequestURI(),
+                        allErrors
+                ));
+    }
+
+    private String extractMessage(String field, String message) {
+        return new StringBuilder()
+                .append(field)
+                .append(": ")
+                .append(message)
+                .toString();
+    }
+
 }
