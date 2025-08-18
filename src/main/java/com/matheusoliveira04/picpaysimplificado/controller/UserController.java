@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.UUID;
@@ -54,9 +55,9 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponse> insert(@RequestBody @Valid UserRequest userRequest) {
+    public ResponseEntity<UserResponse> insert(@RequestBody @Valid UserRequest userRequest, UriComponentsBuilder uriBuilder) {
         User user = new User(
-            null,
+            UUID.randomUUID(),
             userRequest.name(),
             userRequest.cpfCnpj(),
             userRequest.email(),
@@ -64,7 +65,9 @@ public class UserController {
             UserType.fromDescription(userRequest.type())
         );
         User savedUser = service.insert(user);
-        return ResponseEntity.ok(
+        return ResponseEntity
+                .created(uriBuilder.path("/v1/users/{id}").buildAndExpand(savedUser.getId()).toUri())
+                .body(
             new UserResponse(
                 savedUser.getId().toString(),
                 savedUser.getName(),
