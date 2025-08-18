@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Validated
@@ -35,6 +36,21 @@ public class UserController {
                 user.getType().name()
             )
         );
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> findAll() {
+        List<User> users = service.findAll();
+        List<UserResponse> userResponses = users.stream()
+            .map(user -> new UserResponse(
+                user.getId().toString(),
+                user.getName(),
+                user.getCpfCnpj(),
+                user.getEmail(),
+                user.getType().name()
+            ))
+            .toList();
+        return ResponseEntity.ok(userResponses);
     }
 
     @PostMapping
