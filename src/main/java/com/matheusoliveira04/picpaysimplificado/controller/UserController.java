@@ -98,4 +98,11 @@ public class UserController {
                 user.getType().name()
         );
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        service.delete(UUID.fromString(id));
+        return ResponseEntity.noContent().build();
+    }
 }
