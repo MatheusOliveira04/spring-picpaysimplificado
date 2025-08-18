@@ -78,4 +78,24 @@ public class UserController {
         );
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponse> update(@PathVariable String id, @RequestBody UserRequest userRequest) {
+        User user = service.update(
+                new User(
+                        UUID.fromString(id),
+                        userRequest.name(),
+                        userRequest.cpfCnpj(),
+                        userRequest.email(),
+                        userRequest.password(),
+                        UserType.fromDescription(userRequest.type())
+                )
+        );
+        UserResponse updatedUser = new UserResponse(
+                user.getId().toString(),
+                user.getName(),
+                user.getCpfCnpj(),
+                user.getEmail(),
+                user.getType().name()
+        );
+        return ResponseEntity.ok(updatedUser);
 }
