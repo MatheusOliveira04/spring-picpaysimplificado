@@ -6,6 +6,7 @@ import com.matheusoliveira04.picpaysimplificado.model.User;
 import com.matheusoliveira04.picpaysimplificado.model.enums.UserType;
 import org.mapstruct.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -15,8 +16,13 @@ public interface UserMapper {
     @Mapping(target = "type", source = "type", qualifiedByName = "mapUserType")
     User toModel(UserRequest request);
 
+    @Named("toResponse")
     @Mapping(target = "type", source = "type", qualifiedByName = "mapDescriptionType")
     UserResponse toResponse(User user);
+
+    @IterableMapping(qualifiedByName = "toResponse")
+    @Mapping(target = "type", source = "type", qualifiedByName = "mapDescriptionType")
+    List<UserResponse> toResponse(List<User> users);
 
     @Named("mapUserType")
     default UserType mapUserType(String type) {
