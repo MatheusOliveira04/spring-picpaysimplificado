@@ -4,7 +4,6 @@ import com.matheusoliveira04.picpaysimplificado.dto.request.UserRequest;
 import com.matheusoliveira04.picpaysimplificado.dto.response.UserResponse;
 import com.matheusoliveira04.picpaysimplificado.mapper.UserMapper;
 import com.matheusoliveira04.picpaysimplificado.model.User;
-import com.matheusoliveira04.picpaysimplificado.model.enums.UserType;
 import com.matheusoliveira04.picpaysimplificado.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -31,15 +30,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> findById(@PathVariable String id) {
         User user = service.findById(UUID.fromString(id));
-        return ResponseEntity.ok(
-                new UserResponse(
-                        user.getId().toString(),
-                        user.getName(),
-                        user.getCpfCnpj(),
-                        user.getEmail(),
-                        user.getType().name()
-                )
-        );
+        return ResponseEntity.ok(mapper.toResponse(user));
     }
 
     @GetMapping
@@ -63,28 +54,15 @@ public class UserController {
         User savedUser = service.insert(user);
         return ResponseEntity
                 .created(uriBuilder.path("/v1/users/{id}").buildAndExpand(savedUser.getId()).toUri())
-                .body(
-                        new UserResponse(
-                                savedUser.getId().toString(),
-                                savedUser.getName(),
-                                savedUser.getCpfCnpj(),
-                                savedUser.getEmail(),
-                                savedUser.getType().name()
-                        )
-                );
+                .body(mapper.toResponse(savedUser));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> update(@PathVariable String id, @RequestBody UserRequest userRequest) {
-        User user = service.update(mapper.toModel(userRequest));
-        UserResponse updatedUser = new UserResponse(
-                user.getId().toString(),
-                user.getName(),
-                user.getCpfCnpj(),
-                user.getEmail(),
-                user.getType().name()
-        );
-        return ResponseEntity.ok(updatedUser);
+        User user = mapper.toModel(userRequest);
+        user.setId(UUID.fromString(id));
+        var updatedUser = service.update(user);
+        return ResponseEntity.ok(mapper.toResponse(updatedUser));
     }
 
     @DeleteMapping("/{id}")
