@@ -16,7 +16,6 @@ import java.util.UUID;
 @Table(name = "users")
 @Entity(name = "users")
 public class User {
-
     @Id
     @Setter
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,4 +32,8 @@ public class User {
     private String password;
     @Column(nullable = false)
     private UserType type;
+    @OneToOne
+    @JoinColumn(name = "wallet_id", referencedColumnName = "id", nullable = false, unique = true)
+    private Wallet wallet;
+
 }
