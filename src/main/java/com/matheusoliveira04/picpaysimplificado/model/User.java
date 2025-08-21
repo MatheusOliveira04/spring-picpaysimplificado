@@ -9,7 +9,7 @@ import lombok.*;
 import java.util.UUID;
 
 @Getter
-@Builder
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
