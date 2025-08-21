@@ -3,7 +3,11 @@ package com.matheusoliveira04.picpaysimplificado.dto.request;
 import com.matheusoliveira04.picpaysimplificado.validation.annotation.CpfCnpjFormat;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -22,4 +26,8 @@ public class UserRequest {
     private String password;
     @NotBlank
     private String type;
+    @NotNull
+    @PositiveOrZero
+    private BigDecimal walletBalance;
+
 }
