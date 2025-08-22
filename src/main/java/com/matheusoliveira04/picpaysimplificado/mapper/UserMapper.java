@@ -10,7 +10,6 @@ import org.mapstruct.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
@@ -38,7 +37,6 @@ public interface UserMapper {
     @Named("mapWallet")
     default Wallet mapWallet(BigDecimal walletBalance) {
         return Wallet.builder()
-                .id(UUID.randomUUID())
                 .balance(walletBalance)
                 .build();
     }
@@ -49,7 +47,5 @@ public interface UserMapper {
                 .map(UserType::getDescription)
                 .orElseThrow(() -> new IllegalArgumentException("User type cannot be null"));
     }
-
-
 
 }

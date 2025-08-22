@@ -9,7 +9,7 @@ import lombok.*;
 import java.util.UUID;
 
 @Getter
-@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -32,8 +32,7 @@ public class User {
     private String password;
     @Column(nullable = false)
     private UserType type;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "wallet_id", referencedColumnName = "id", nullable = false, unique = true)
     private Wallet wallet;
-
 }

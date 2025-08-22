@@ -21,6 +21,6 @@ public class Wallet {
     @PositiveOrZero
     @Column(nullable = false, scale = 2)
     private BigDecimal balance;
-    @OneToOne(mappedBy = "wallet")
+    @OneToOne(mappedBy = "wallet", fetch = FetchType.LAZY)
     private User user;
 }
