@@ -1,6 +1,8 @@
 package com.matheusoliveira04.picpaysimplificado.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,13 @@ import java.util.List;
 @RestControllerAdvice
 public class ControllerExceptionHandler {
 
+    Logger logger = LoggerFactory.getLogger(ControllerExceptionHandler.class);
+
     @ExceptionHandler(ObjectNotFoundException.class)
     public ResponseEntity<StandardError> getObjectNotFoundException(
             ObjectNotFoundException e,
             HttpServletRequest request) {
+        exceptionMessageLog(e);
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new StandardError(
@@ -33,6 +38,7 @@ public class ControllerExceptionHandler {
     public ResponseEntity<StandardError> getDataIntegrityViolationException(
             DataIntegrityViolationException e,
             HttpServletRequest request) {
+        exceptionMessageLog(e);
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(new StandardError(
@@ -47,6 +53,7 @@ public class ControllerExceptionHandler {
     public ResponseEntity<StandardError> getIllegalArgumentException(
             IllegalArgumentException e,
             HttpServletRequest request) {
+        exceptionMessageLog(e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new StandardError(
@@ -61,6 +68,7 @@ public class ControllerExceptionHandler {
     public ResponseEntity<StandardError> getMethodArgumentNotValidException(
             MethodArgumentNotValidException e,
             HttpServletRequest request) {
+        exceptionMessageLog(e);
         List<String> allErrors = e.getAllErrors()
                 .stream()
                 .map(error -> extractMessage( ((FieldError) error).getField(), error.getDefaultMessage()))
@@ -73,6 +81,10 @@ public class ControllerExceptionHandler {
                         request.getRequestURI(),
                         allErrors
                 ));
+    }
+
+    private void exceptionMessageLog(Exception e) {
+        logger.error(e.getClass().getSimpleName() + " " + e.getMessage());
     }
 
     private String extractMessage(String field, String message) {
