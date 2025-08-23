@@ -1,4 +1,4 @@
-package com.matheusoliveira04.picpaysimplificado.exception;
+package com.matheusoliveira04.picpaysimplificado.exception.service;
 
 public class ObjectNotFoundException extends RuntimeException {
 

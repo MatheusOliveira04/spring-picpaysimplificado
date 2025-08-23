@@ -1,6 +1,6 @@
 package com.matheusoliveira04.picpaysimplificado.service.impl;
 
-import com.matheusoliveira04.picpaysimplificado.exception.ObjectNotFoundException;
+import com.matheusoliveira04.picpaysimplificado.exception.service.ObjectNotFoundException;
 import com.matheusoliveira04.picpaysimplificado.model.User;
 import com.matheusoliveira04.picpaysimplificado.repository.UserRepository;
 import com.matheusoliveira04.picpaysimplificado.service.UserService;

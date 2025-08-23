@@ -1,5 +1,7 @@
-package com.matheusoliveira04.picpaysimplificado.exception;
+package com.matheusoliveira04.picpaysimplificado.exception.controller;
 
+import com.matheusoliveira04.picpaysimplificado.exception.service.IntegrityViolationException;
+import com.matheusoliveira04.picpaysimplificado.exception.service.ObjectNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,21 @@ public class ControllerExceptionHandler {
                 .body(new StandardError(
                         LocalDateTime.now(),
                         HttpStatus.NOT_FOUND.value(),
+                        request.getRequestURI(),
+                        List.of(e.getMessage())
+                ));
+    }
+
+    @ExceptionHandler(IntegrityViolationException.class)
+    public ResponseEntity<StandardError> getIntegrityViolationException(
+            IntegrityViolationException e,
+            HttpServletRequest request) {
+        exceptionMessageLog(e);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new StandardError(
+                        LocalDateTime.now(),
+                        HttpStatus.BAD_REQUEST.value(),
                         request.getRequestURI(),
                         List.of(e.getMessage())
                 ));

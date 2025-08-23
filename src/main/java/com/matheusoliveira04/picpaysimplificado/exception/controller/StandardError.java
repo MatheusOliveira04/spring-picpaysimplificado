@@ -1,4 +1,4 @@
-package com.matheusoliveira04.picpaysimplificado.exception;
+package com.matheusoliveira04.picpaysimplificado.exception.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
