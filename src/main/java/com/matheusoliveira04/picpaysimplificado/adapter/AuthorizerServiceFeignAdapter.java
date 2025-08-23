@@ -1,10 +1,16 @@
 package com.matheusoliveira04.picpaysimplificado.adapter;
 
 import com.matheusoliveira04.picpaysimplificado.client.ExternalAuthorizerClient;
+import com.matheusoliveira04.picpaysimplificado.client.dto.AuthorizerClientResponse;
+import com.matheusoliveira04.picpaysimplificado.client.dto.AuthorizerDataResponse;
+import com.matheusoliveira04.picpaysimplificado.exception.service.IntegrityViolationException;
+import com.matheusoliveira04.picpaysimplificado.exception.service.ObjectNotFoundException;
 import com.matheusoliveira04.picpaysimplificado.service.AuthorizerService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class AuthorizerServiceFeignAdapter implements AuthorizerService {
@@ -17,13 +23,22 @@ public class AuthorizerServiceFeignAdapter implements AuthorizerService {
 
     @Override
     public boolean authorizeTransaction() {
-        Map<String, Object> response = client.authorizeTransaction();
-        if (response != null && response.containsKey("data")) {
-            Map<String, Object> data = (Map<String, Object>) response.get("data");
-            if (data.containsKey("authorization")) {
-                return (boolean) data.get("authorization");
-            }
+        ResponseEntity<AuthorizerClientResponse> authorizationResponse = client.authorizeTransaction();
+        validateStatusCodeOk(authorizationResponse);
+        return extractAuthorization(authorizationResponse);
+    }
+
+    private void validateStatusCodeOk(ResponseEntity<AuthorizerClientResponse> authorizationResponse) {
+        if (!HttpStatus.OK.equals(authorizationResponse.getStatusCode())) {
+            throw new IntegrityViolationException("Failed to authorize transaction");
         }
-        throw new RuntimeException("Failed to authorize transaction");
+    }
+
+    private static Boolean extractAuthorization(ResponseEntity<AuthorizerClientResponse> authorizationResponse) {
+        return Optional.of(authorizationResponse)
+                .map(ResponseEntity::getBody)
+                .map(AuthorizerClientResponse::getData)
+                .map(AuthorizerDataResponse::isAuthorized)
+                .orElseThrow(() -> new ObjectNotFoundException("Authorization data not found"));
     }
 }
