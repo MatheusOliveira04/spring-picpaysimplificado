@@ -56,14 +56,18 @@ public class TransferServiceImpl implements TransferService {
         //consultar um serviço autorizador externo
         // se autorizado, debitar do pagador e creditar no recebedor
         //se não autorizado, lança exceção
-        System.err.println("Consultando serviço autorizador externo...");
-        System.err.println(authorizerService.authorizeTransaction());
+        //System.err.println("Consultando serviço autorizador externo...");
+        //System.err.println(authorizerService.authorizeTransaction());
 
 
         //Diminuir o saldo do pagador
+        payer.getWallet().debit(transfer.getValue());
         //Aumentar o saldo do recebedor
+        payee.getWallet().credit(transfer.getValue());
         //Fazer um save nos users e transfers
-
+        userService.update(payer);
+        userService.update(payee);
+        repository.save(transfer);
         //Enviar notificação para o recebedor - MOCK
 
     }
